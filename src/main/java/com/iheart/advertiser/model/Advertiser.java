@@ -1,7 +1,8 @@
 package com.iheart.advertiser.model;
 
-import java.util.Objects;
+import lombok.Data;
 
+@Data
 public class Advertiser {
 
     private String name;
@@ -12,44 +13,5 @@ public class Advertiser {
         this.name = name;
         this.contact = contact;
         this.credit = credit;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getContact() {
-        return contact;
-    }
-
-    public void setContact(String contact) {
-        this.contact = contact;
-    }
-
-    public double getCredit() {
-        return credit;
-    }
-
-    public void setCredit(double credit) {
-        this.credit = credit;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Advertiser that = (Advertiser) o;
-        return Double.compare(that.credit, credit) == 0 &&
-                Objects.equals(name, that.name) &&
-                Objects.equals(contact, that.contact);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(name, contact, credit);
     }
 }
