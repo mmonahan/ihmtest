@@ -1,5 +1,7 @@
 package com.iheart.advertiser.model;
 
+import java.util.Objects;
+
 public class Advertiser {
 
     private String name;
@@ -34,5 +36,20 @@ public class Advertiser {
 
     public void setCredit(double credit) {
         this.credit = credit;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Advertiser that = (Advertiser) o;
+        return Double.compare(that.credit, credit) == 0 &&
+                Objects.equals(name, that.name) &&
+                Objects.equals(contact, that.contact);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, contact, credit);
     }
 }

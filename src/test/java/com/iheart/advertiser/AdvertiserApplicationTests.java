@@ -13,6 +13,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
@@ -32,4 +33,36 @@ public class AdvertiserApplicationTests {
         assertFalse(response.getBody().isEmpty());
     }
 
+    @Test
+    public void testNewAdvertiser() {
+        Advertiser newAdvertiser = new Advertiser("SellingTime", "Yen Remigio", 1000.0);
+        Advertiser result = restTemplate.postForObject("/api/advertiser", newAdvertiser, Advertiser.class);
+        assertEquals(newAdvertiser, result);
+    }
+
+    @Test
+    public void testGetAdvertiser() {
+        Advertiser result = restTemplate.getForObject("/api/advertiser/AdvertCo", Advertiser.class);
+        assertEquals(new Advertiser("AdvertCo","Emina Alhambra", 100.0), result);
+    }
+
+    @Test
+    public void testUpdateAdvertiser() {
+        String advertiserName = "UpdateYourImage";
+        Advertiser newAdvertiser = new Advertiser(advertiserName, "Luciano Hurla", 1000.0);
+        restTemplate.postForObject("/api/advertiser", newAdvertiser, Advertiser.class);
+        Advertiser updateAdvertiser = new Advertiser(advertiserName, "Update Contact", 777.0);
+        restTemplate.put("/api/advertiser/" + advertiserName, updateAdvertiser);
+        Advertiser result = restTemplate.getForObject("/api/advertiser/" + advertiserName, Advertiser.class);
+        assertEquals(updateAdvertiser, result);
+    }
+
+    @Test
+    public void testDeleteAdvertiser() {
+        String advertiserName = "DeleteYourWoes";
+        Advertiser newAdvertiser = new Advertiser(advertiserName, "", 0.0);
+        restTemplate.postForObject("/api/advertiser", newAdvertiser, Advertiser.class);
+        restTemplate.delete("/api/advertiser/" + advertiserName);
+        //TODO: try to get and it's not there
+    }
 }
