@@ -30,8 +30,8 @@ public class AdvertiserController {
     }
 
     @PutMapping("/api/advertiser/{name}")
-    public Advertiser updateAdvertiser(@RequestBody Advertiser updatedAdvertiser) {
-        repository.updateAdvertiser(updatedAdvertiser);
+    public Advertiser updateAdvertiser(@PathVariable String name, @RequestBody Advertiser updatedAdvertiser) {
+        repository.updateAdvertiser(name, updatedAdvertiser);
         return repository.getAdvertiser(updatedAdvertiser.getName());
     }
 

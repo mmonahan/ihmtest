@@ -17,8 +17,8 @@ public interface AdvertiserRepository {
     @Select("SELECT * FROM advertiser WHERE name = #{name}")
     Advertiser getAdvertiser(String name);
 
-    @Update("UPDATE advertiser SET contact = #{contact}, credit = #{credit} WHERE name=#{name}")
-    void updateAdvertiser(Advertiser updatedAdvertiser);
+    @Update("UPDATE advertiser SET name = #{updated.name}, contact = #{updated.contact}, credit = #{updated.credit} WHERE name=#{name}")
+    void updateAdvertiser(String name, Advertiser updated);
 
     @Delete("DELETE FROM advertiser WHERE name = #{name}")
     void deleteAdvertiser(String name);

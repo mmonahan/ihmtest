@@ -51,9 +51,10 @@ public class AdvertiserApplicationTests {
         String advertiserName = "UpdateYourImage";
         Advertiser newAdvertiser = new Advertiser(advertiserName, "Luciano Hurla", 1000.0);
         restTemplate.postForObject("/api/advertiser", newAdvertiser, Advertiser.class);
-        Advertiser updateAdvertiser = new Advertiser(advertiserName, "Update Contact", 777.0);
+        String updateName = "UpdateName";
+        Advertiser updateAdvertiser = new Advertiser(updateName, "Update Contact", 777.0);
         restTemplate.put("/api/advertiser/" + advertiserName, updateAdvertiser);
-        Advertiser result = restTemplate.getForObject("/api/advertiser/" + advertiserName, Advertiser.class);
+        Advertiser result = restTemplate.getForObject("/api/advertiser/" + updateName, Advertiser.class);
         assertEquals(updateAdvertiser, result);
     }
 
