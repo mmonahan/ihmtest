@@ -22,4 +22,7 @@ public interface AdvertiserRepository {
 
     @Delete("DELETE FROM advertiser WHERE name = #{name}")
     void deleteAdvertiser(String name);
+
+    @Update("UPDATE advertiser SET credit = #{credit} WHERE name = #{name}")
+    void updateCredit(String name, double credit);
 }

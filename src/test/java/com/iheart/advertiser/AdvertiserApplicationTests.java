@@ -1,7 +1,5 @@
 package com.iheart.advertiser;
 
-import com.iheart.advertiser.controller.AdvertiserAlreadyExistsException;
-import com.iheart.advertiser.controller.AdvertiserBadlyFormattedException;
 import com.iheart.advertiser.controller.AdvertiserNotFoundException;
 import com.iheart.advertiser.model.Advertiser;
 import org.junit.Test;
@@ -17,9 +15,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -77,5 +73,27 @@ public class AdvertiserApplicationTests {
 
         assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
         assertEquals(AdvertiserNotFoundException.format(advertiserName), result.getBody());
+    }
+
+    @Test
+    public void testCheckCredit() {
+        boolean defaultResult = restTemplate.getForObject("/api/advertiser/AdvertCo/checkCredit", Boolean.class);
+        boolean trueResult = restTemplate.getForObject("/api/advertiser/AdvertCo/checkCredit?amount=50.0", Boolean.class);
+        boolean falseResult = restTemplate.getForObject("/api/advertiser/AdvertCo/checkCredit?amount=9000.0", Boolean.class);
+
+        assertTrue(defaultResult);
+        assertTrue(trueResult);
+        assertFalse(falseResult);
+    }
+
+    @Test
+    public void testDeductCredit() {
+        String advertiserName = "BestAdverts";
+        Advertiser newAdvertiser = new Advertiser(advertiserName, "Gregorio Marsland", 250.0);
+
+        restTemplate.postForObject("/api/advertiser", newAdvertiser, Advertiser.class);
+        Advertiser result = restTemplate.postForObject("/api/advertiser/" + advertiserName + "/deductCredit", 50.0, Advertiser.class);
+
+        assertEquals(200.0, result.getCredit(), 0.001);
     }
 }

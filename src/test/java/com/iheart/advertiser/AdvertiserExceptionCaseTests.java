@@ -1,15 +1,15 @@
 package com.iheart.advertiser;
 
 import com.iheart.advertiser.controller.AdvertiserAlreadyExistsException;
-import com.iheart.advertiser.controller.AdvertiserBadlyFormattedException;
+import com.iheart.advertiser.controller.AdvertiserFormatException;
 import com.iheart.advertiser.controller.AdvertiserNotFoundException;
+import com.iheart.advertiser.controller.CreditFormatException;
 import com.iheart.advertiser.model.Advertiser;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -29,7 +29,7 @@ public class AdvertiserExceptionCaseTests {
         ResponseEntity<String> result = restTemplate.postForEntity("/api/advertiser", newAdvertiser, String.class);
 
         assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
-        assertEquals(AdvertiserBadlyFormattedException.format(newAdvertiser), result.getBody());
+        assertEquals(AdvertiserFormatException.format(newAdvertiser), result.getBody());
     }
 
     @Test
@@ -63,7 +63,7 @@ public class AdvertiserExceptionCaseTests {
                 "/api/advertiser/" + advertiserName, HttpMethod.PUT, entity, String.class);
 
         assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
-        assertEquals(AdvertiserBadlyFormattedException.format(updateAdvertiser), result.getBody());
+        assertEquals(AdvertiserFormatException.format(updateAdvertiser), result.getBody());
     }
 
     @Test
@@ -77,5 +77,29 @@ public class AdvertiserExceptionCaseTests {
 
         assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
         assertEquals(AdvertiserNotFoundException.format(advertiserName), result.getBody());
+    }
+
+    @Test
+    public void testCheckCreditBadFormat() {
+        ResponseEntity<String> result = restTemplate.getForEntity("/api/advertiser/AdvertCo/checkCredit?amount=fifty", String.class);
+
+        assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
+        assertEquals(CreditFormatException.format("fifty"), result.getBody());
+    }
+
+    @Test
+    public void testCheckCreditMissingAdvertiser() {
+        ResponseEntity<String> result = restTemplate.getForEntity("/api/advertiser/MissingAdvertiserLLC/checkCredit?amount=50.0", String.class);
+
+        assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
+        assertEquals(AdvertiserNotFoundException.format("MissingAdvertiserLLC"), result.getBody());
+    }
+
+    @Test
+    public void testDeductCreditMissingAdvertiser() {
+        ResponseEntity<String> result = restTemplate.postForEntity("/api/advertiser/NotThereCo/deductCredit", 50.0, String.class);
+
+        assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
+        assertEquals(AdvertiserNotFoundException.format("NotThereCo"), result.getBody());
     }
 }

@@ -22,7 +22,7 @@ public class AdvertiserController {
     public Advertiser newAdvertiser(@RequestBody Advertiser newAdvertiser) {
 
         if (null == newAdvertiser.getName()) {
-            throw new AdvertiserBadlyFormattedException(newAdvertiser);
+            throw new AdvertiserFormatException(newAdvertiser);
         }
 
         if (null != repository.getAdvertiser(newAdvertiser.getName())) {
@@ -46,7 +46,7 @@ public class AdvertiserController {
     public Advertiser updateAdvertiser(@PathVariable String name, @RequestBody Advertiser updatedAdvertiser) {
 
         if (null == updatedAdvertiser.getName()) {
-            throw new AdvertiserBadlyFormattedException(updatedAdvertiser);
+            throw new AdvertiserFormatException(updatedAdvertiser);
         }
 
         if (null == repository.getAdvertiser(name)) {
@@ -62,6 +62,29 @@ public class AdvertiserController {
         repository.deleteAdvertiser(name);
     }
 
-    //TODO: GET hasEnoughCredit
-    //TODO: POST deductCredit
+    @GetMapping("/api/advertiser/{name}/checkCredit")
+    public Boolean checkCredit(@PathVariable String name, @RequestParam(value = "amount", defaultValue = "0.01") String amount) {
+        Advertiser foundAdvertiser = repository.getAdvertiser(name);
+        if (null == foundAdvertiser) {
+            throw new AdvertiserNotFoundException(name);
+        }
+
+        try {
+            Double required = Double.valueOf(amount);
+            return foundAdvertiser.getCredit() >= required;
+        } catch (NumberFormatException ex) {
+            throw new CreditFormatException(amount);
+        }
+    }
+
+    @PostMapping("/api/advertiser/{name}/deductCredit")
+    public Advertiser deductCredit(@PathVariable String name, @RequestBody Double amount) {
+        Advertiser foundAdvertiser = repository.getAdvertiser(name);
+        if (null == foundAdvertiser) {
+            throw new AdvertiserNotFoundException(name);
+        }
+
+        repository.updateCredit(name, foundAdvertiser.getCredit() - amount);
+        return repository.getAdvertiser(name);
+    }
 }

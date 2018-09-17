@@ -24,9 +24,16 @@ public class AdvertiserExceptionAdvice {
     }
 
     @ResponseBody
-    @ExceptionHandler(AdvertiserBadlyFormattedException.class)
+    @ExceptionHandler(AdvertiserFormatException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    String handleAdvertiserBadlyFormatted(AdvertiserBadlyFormattedException ex) {
+    String handleAdvertiserBadlyFormatted(AdvertiserFormatException ex) {
+        return ex.getMessage();
+    }
+
+    @ResponseBody
+    @ExceptionHandler(CreditFormatException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    String handleNumberFormatException(CreditFormatException ex) {
         return ex.getMessage();
     }
 }

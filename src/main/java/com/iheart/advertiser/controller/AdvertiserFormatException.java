@@ -2,9 +2,9 @@ package com.iheart.advertiser.controller;
 
 import com.iheart.advertiser.model.Advertiser;
 
-public class AdvertiserBadlyFormattedException extends RuntimeException {
+public class AdvertiserFormatException extends RuntimeException {
 
-    public AdvertiserBadlyFormattedException(Advertiser newAdvertiser) {
+    public AdvertiserFormatException(Advertiser newAdvertiser) {
         super(format(newAdvertiser));
     }
 
