@@ -23,7 +23,7 @@ public class AdvertiserApplication {
         ApiInfo apiInfo = new ApiInfo(
                 "Advertiser Api Service",
                 "a wonderful advertiser service",
-                "0.1.0",
+                "1.0.0",
                 "termsOfServiceUrl",
                 new Contact("mmonahan", "https://github.com/mmonahan", "fake@email.com"),
                 "license",
