@@ -20,17 +20,39 @@ public class AdvertiserController {
 
     @PostMapping("/api/advertiser")
     public Advertiser newAdvertiser(@RequestBody Advertiser newAdvertiser) {
+
+        if (null == newAdvertiser.getName()) {
+            throw new AdvertiserBadlyFormattedException(newAdvertiser);
+        }
+
+        if (null != repository.getAdvertiser(newAdvertiser.getName())) {
+            throw new AdvertiserAlreadyExistsException(newAdvertiser.getName());
+        }
+
         repository.addAdvertiser(newAdvertiser);
         return repository.getAdvertiser(newAdvertiser.getName());
     }
 
     @GetMapping("/api/advertiser/{name}")
     public Advertiser getAdvertiser(@PathVariable String name) {
-        return repository.getAdvertiser(name);
+        Advertiser foundAdvertiser = repository.getAdvertiser(name);
+        if (null == foundAdvertiser) {
+            throw new AdvertiserNotFoundException(name);
+        }
+        return foundAdvertiser;
     }
 
     @PutMapping("/api/advertiser/{name}")
     public Advertiser updateAdvertiser(@PathVariable String name, @RequestBody Advertiser updatedAdvertiser) {
+
+        if (null == updatedAdvertiser.getName()) {
+            throw new AdvertiserBadlyFormattedException(updatedAdvertiser);
+        }
+
+        if (null == repository.getAdvertiser(name)) {
+            throw new AdvertiserNotFoundException(name);
+        }
+
         repository.updateAdvertiser(name, updatedAdvertiser);
         return repository.getAdvertiser(updatedAdvertiser.getName());
     }
